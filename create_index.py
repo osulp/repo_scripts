@@ -1,6 +1,7 @@
 import glob2
 import os
-path = '/Users/zhanghu/Downloads/test'
+path = '/data0/hydra/shared/tmp/bags/etd/test'
+baseurl = 'http://osul-mastaging.library.oregonstate.edu/'
 
 # find all Bag directories in path
 # create index.html in path
@@ -11,7 +12,8 @@ def write_main_index(path):
   f = open(main_index_file, 'w')
   for dir in dirs:
     if os.path.isdir(dir):
-      item = "{}{}".format('', dir)
+      # to crawl AWS with baseurl
+      item = "{}{}".format('', dir).replace("/data0/hydra/shared/tmp/bags/", baseurl)
       content += '<li><a href="{}">{}</a></li>\n'.format(item, item)
       # if movw write in for, then it will be output subdirectories incrementally
       # link to sub1
@@ -36,11 +38,11 @@ def write_bag_index(dir):
   files = [f for f in glob2.glob(dir + "**/*.txt", recursive=False)]
   data = os.path.join(dir, 'data')
   files.extend(glob2.glob(data + "**/*.*", recursive=False))
-  print files
+  # print files
   index_file = "{}/index.html".format(dir)
   f = open(index_file, 'w')
   for file in files:
-    item = "{}{}".format('', file)
+    item = "{}{}".format('', file).replace("/data0/hydra/shared/tmp/bags/", baseurl)
     content += '<li><a href="{}">{}</a></li>\n'.format(item, item)
   f.write(get_page(content))  
   f.close()
@@ -64,5 +66,5 @@ def get_page(content):
 </body>
 </html>""".format(content)
 
-
+# assume a list of Bags as subdirectories
 write_main_index(path)
