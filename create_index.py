@@ -15,7 +15,7 @@ def write_main_index(path):
       # to crawl AWS with baseurl
       item = "{}{}".format('', dir).replace("/data0/hydra/shared/tmp/bags/", baseurl)
       content += '<li><a href="{}">{}</a></li>\n'.format(item, item)
-      # if movw write in for, then it will be output subdirectories incrementally
+      # if move write in the for loop, then it will be output subdirectories incrementally
       # link to sub1
       # 
       # link to sub1
