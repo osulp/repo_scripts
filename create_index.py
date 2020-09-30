@@ -1,6 +1,6 @@
 import glob2
 import os
-path = '/data0/hydra/shared/tmp/bags/etd/test'
+path = '/data0/hydra/shared/tmp/bags/etd/2020'
 baseurl = 'http://osul-mastaging.library.oregonstate.edu/'
 
 # find all Bag directories in path
@@ -8,14 +8,15 @@ baseurl = 'http://osul-mastaging.library.oregonstate.edu/'
 def write_main_index(path):
   content = ''
   dirs = glob2.glob("{}/*".format(path), recursive=False)
+  #dirs = [os.path.join(path, o) for o in os.listdir(path) 
+  #                  if os.path.isdir(os.path.join(path,o))]
   main_index_file = "{}/index.html".format(path)
   f = open(main_index_file, 'w')
   for dir in dirs:
-    if os.path.isdir(dir):
-      # to crawl AWS with baseurl
+    if os.path.isdir(dir): 
       item = "{}{}".format('', dir).replace("/data0/hydra/shared/tmp/bags/", baseurl)
       content += '<li><a href="{}">{}</a></li>\n'.format(item, item)
-      # if move write in the for loop, then it will be output subdirectories incrementally
+      # if movw write in for, then it will be output subdirectories incrementally
       # link to sub1
       # 
       # link to sub1
@@ -28,17 +29,21 @@ def write_main_index(path):
       write_bag_index(dir)
   f.write(get_page(content))
   f.close()
+  print "DONE"
 
 # go to each Bag directory
 # get all .txt
 # get everything in data
+# create data.zip for data directory
 # create index.html in Bag
 def write_bag_index(dir):
   content = ''
   files = [f for f in glob2.glob(dir + "**/*.txt", recursive=False)]
   data = os.path.join(dir, 'data')
-  files.extend(glob2.glob(data + "**/*.*", recursive=False))
-  # print files
+  files.extend(glob2.glob(data + "**/*.*", recursive=True))
+  cmd = "zip -r " + dir + "/data.zip " + data
+  os.system(cmd) 
+  files.append(dir + "/data.zip")
   index_file = "{}/index.html".format(dir)
   f = open(index_file, 'w')
   for file in files:
@@ -66,5 +71,5 @@ def get_page(content):
 </body>
 </html>""".format(content)
 
-# assume a list of Bags as subdirectories
+
 write_main_index(path)
